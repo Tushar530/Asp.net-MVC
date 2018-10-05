@@ -1,0 +1,137 @@
+﻿@model IEnumerable<MVC_CODEFIRST.Models.Employee>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Department.DepartmentName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Age)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Department.DepartmentName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Age)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.EmployeeId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.EmployeeId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.EmployeeId })
+        </td>
+    </tr>
+}
+
+</table>
+
+
+
+
+
+
+
+
+
+@{
+
+
+
+    AjaxOptions options = new AjaxOptions
+
+    {
+
+        UpdateTargetId = "searchResult",
+
+        Confirm = "Are you sure to start search?",
+
+        InsertionMode = InsertionMode.Replace,
+
+        LoadingElementId = "divLoading"
+
+    };
+
+}
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<h2>Employees</h2>
+
+<table style="width: 100%;">
+
+    @*<thead>
+
+          <tr>
+
+            <th>EmployeeId</th>
+
+            <th>Name</th>
+
+            <th>Name</th>
+
+
+
+          </tr>
+
+        </thead>*@
+
+    <tbody id="searchResult">
+
+        @Html.Action("SearchPeople", new { keyword = "" })
+
+    </tbody>
+
+</table>
+
+@using (Ajax.BeginForm("SearchPeople", options))
+
+{
+
+    <div id="divLoading" style="color: red; width: 200px; background-color: yellow; font-size: larger; display: none; position: absolute;">
+
+        Loading ....
+
+    </div>
+
+    <div>
+
+        @Html.TextBox("keyword")
+
+        <button type="submit">Search</button>
+
+    </div>
+
+}
+
+
+
+
+
+ public PartialViewResult SearchPeople(string keyword)
+
+    {
+
+      var data = db.Employees.Where(f => f.Name.StartsWith(keyword)).ToList();
+
+      return PartialView(data);
+
+    }
